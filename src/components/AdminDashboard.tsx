@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -39,7 +38,7 @@ import {
 } from '@/data/ticketsData';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
-import { MessageSquare, Search, RefreshCcw, UserPlus, Trash2, ClockRewind, Users, Settings } from "lucide-react";
+import { MessageSquare, Search, RefreshCcw, UserPlus, Trash2, Clock, Users, Settings } from "lucide-react";
 
 interface AdminDashboardProps {
   currentAdmin: string;
@@ -279,7 +278,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentAdmin }) => {
                 <Users className="h-4 w-4 mr-2" /> Manage Admins
               </TabsTrigger>
               <TabsTrigger value="logs" className="flex items-center">
-                <ClockRewind className="h-4 w-4 mr-2" /> Activity Logs
+                <Clock className="h-4 w-4 mr-2" /> Activity Logs
               </TabsTrigger>
             </>
           )}
@@ -593,7 +592,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ currentAdmin }) => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <ClockRewind className="h-5 w-5 mr-2" /> Administrator Activity Logs
+                    <Clock className="h-5 w-5 mr-2" /> Administrator Activity Logs
                   </CardTitle>
                   <CardDescription>
                     Recent administrator activities in the system
