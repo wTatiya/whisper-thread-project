@@ -1,0 +1,239 @@
+
+import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
+import { getTicketByIdAndPassword, addComment, Ticket, Comment } from '@/data/ticketsData';
+import { format } from 'date-fns';
+import { toast } from 'sonner';
+import { Lock, Search, MessageSquare } from "lucide-react";
+
+const TicketTracker: React.FC = () => {
+  const [ticketId, setTicketId] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const [newComment, setNewComment] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const foundTicket = getTicketByIdAndPassword(ticketId, password);
+      
+      if (foundTicket) {
+        setTicket(foundTicket);
+        toast.success("Report found!");
+      } else {
+        toast.error("No report found with the provided ID and password.");
+        setTicket(null);
+      }
+    } catch (error) {
+      console.error("Error retrieving ticket:", error);
+      toast.error("There was an error retrieving your report. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAddComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!ticket || !newComment.trim()) return;
+    
+    try {
+      const comment = addComment(ticket.id, newComment, false);
+      if (comment) {
+        // Update the local ticket state
+        setTicket({
+          ...ticket,
+          comments: [...ticket.comments, comment]
+        });
+        setNewComment('');
+        toast.success("Comment added successfully");
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      toast.error("Failed to add comment");
+    }
+  };
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'new':
+        return <Badge className="bg-blue-500">New</Badge>;
+      case 'in-progress':
+        return <Badge className="bg-yellow-500">In Progress</Badge>;
+      case 'resolved':
+        return <Badge className="bg-green-500">Resolved</Badge>;
+      case 'closed':
+        return <Badge className="bg-gray-500">Closed</Badge>;
+      default:
+        return <Badge>Unknown</Badge>;
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), 'MMM d, yyyy h:mm a');
+    } catch (e) {
+      return 'Invalid date';
+    }
+  };
+
+  const resetTracker = () => {
+    setTicket(null);
+    setTicketId('');
+    setPassword('');
+  };
+
+  return (
+    <div className="w-full max-w-md mx-auto animate-fade-in">
+      {!ticket ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Track Your Report</CardTitle>
+            <CardDescription>
+              Enter your report ID and password to view its status and responses
+            </CardDescription>
+          </CardHeader>
+          <form onSubmit={handleSubmit}>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="ticketId" className="text-sm font-medium">
+                  Report ID
+                </label>
+                <Input
+                  id="ticketId"
+                  placeholder="Enter the ID provided when you submitted your report"
+                  value={ticketId}
+                  onChange={(e) => setTicketId(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-medium">
+                  Access Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your access password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex items-center text-sm text-muted-foreground">
+                <Lock className="w-4 h-4 mr-2" />
+                <p>Your tracking information is kept private and secure.</p>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button 
+                type="submit" 
+                className="w-full bg-whistleblower-navy hover:bg-whistleblower-darknavy"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  "Searching..."
+                ) : (
+                  <>
+                    <Search className="mr-2 h-4 w-4" /> Find My Report
+                  </>
+                )}
+              </Button>
+            </CardFooter>
+          </form>
+        </Card>
+      ) : (
+        <Card className="overflow-hidden">
+          <CardHeader className="pb-3">
+            <div className="flex justify-between items-center">
+              <CardTitle className="text-xl">{ticket.title}</CardTitle>
+              {getStatusBadge(ticket.status)}
+            </div>
+            <CardDescription className="pt-2">
+              Submitted on {formatDate(ticket.createdAt)}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="p-3 bg-gray-50 rounded-md border">
+              <p className="text-sm text-gray-700 whitespace-pre-wrap">{ticket.description}</p>
+            </div>
+            
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium">Communication Thread</h3>
+              
+              {ticket.comments.length === 0 ? (
+                <div className="p-3 text-center text-sm text-muted-foreground bg-gray-50 rounded-md">
+                  No responses yet. Check back later.
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {ticket.comments.map((comment: Comment) => (
+                    <div 
+                      key={comment.id} 
+                      className={`p-3 rounded-md ${
+                        comment.isAdmin 
+                          ? 'bg-blue-50 border border-blue-100 ml-4' 
+                          : 'bg-gray-50 border border-gray-100 mr-4'
+                      }`}
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-semibold">
+                          {comment.isAdmin ? 'Administrator' : 'You'}
+                        </span>
+                        <span className="text-xs text-gray-500">{formatDate(comment.createdAt)}</span>
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap">{comment.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {ticket.status !== 'closed' && (
+                <form onSubmit={handleAddComment} className="mt-4">
+                  <div className="space-y-2">
+                    <label htmlFor="newComment" className="text-sm font-medium">
+                      Add a Reply
+                    </label>
+                    <Textarea
+                      id="newComment"
+                      placeholder="Add more details or respond to questions..."
+                      rows={3}
+                      className="resize-y"
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      required
+                    />
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full mt-3 bg-whistleblower-teal hover:bg-teal-500"
+                    disabled={!newComment.trim()}
+                  >
+                    <MessageSquare className="mr-2 h-4 w-4" /> Send Reply
+                  </Button>
+                </form>
+              )}
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button 
+              onClick={resetTracker} 
+              variant="outline"
+              className="w-full"
+            >
+              Track a Different Report
+            </Button>
+          </CardFooter>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+export default TicketTracker;
