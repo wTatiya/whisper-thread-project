@@ -15,19 +15,18 @@ const Index = () => {
       <div className="whistleblower-container">
         <header className="text-center mb-10">
           <h1 className="text-3xl font-bold text-whistleblower-navy mb-4">
-            Whistleblower Reporting Platform
+            สายตรงถึงหัวหน้าพยาบาล
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Submit and track anonymous reports securely. Your identity remains protected 
-            while ensuring your concerns are addressed.
+            ส่งเรื่องร้องทุกข์และติดตามรายงานโดยไม่ต้องเปิดเผยตัวตน ไม่ต้องใช้เบอร์โทรศัพท์หรืออีเมล เพียงเก็บรหัสรายงานไว้เพื่อติดตามความคืบหน้า และใช้สำหรับสื่อสารกับหัวหน้าพยาบาลโดยตรงในระบบที่ปลอดภัย ตัวตนของคุณจะยังคงเป็นความลับตลอดกระบวนการ
           </p>
         </header>
 
         <div className="max-w-md mx-auto mb-8">
           <Tabs defaultValue="submit" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="submit">Submit Report</TabsTrigger>
-              <TabsTrigger value="track">Track Report</TabsTrigger>
+              <TabsTrigger value="submit">ส่งรายงาน</TabsTrigger>
+              <TabsTrigger value="track">ติดตามรายงาน</TabsTrigger>
             </TabsList>
             <div className="mt-6">
               <TabsContent value="submit" className="m-0">

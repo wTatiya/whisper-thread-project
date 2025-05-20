@@ -71,14 +71,14 @@ const TicketForm: React.FC = () => {
     return (
       <Card className="w-full max-w-md mx-auto animate-fade-in">
         <CardHeader>
-          <CardTitle className="text-center text-green-600">Report Submitted</CardTitle>
+          <CardTitle className="text-center text-green-600">ส่งรายงานของคุณแล้ว</CardTitle>
           <CardDescription className="text-center">
             Your report has been submitted anonymously
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="p-4 bg-green-50 rounded-md mb-4 border border-green-200">
-            <p className="font-bold mb-2">Please save this information securely:</p>
+            <p className="font-bold mb-2">ข้อมูลนี้มีไว้เพื่อสื่อสารและติดตามเรื่อง กรุณาจดบันทึกหรือแคปหน้าจอเอาไว้:</p>
             <p className="mb-2">
               <span className="font-semibold">Report ID:</span> {submissionResult.ticketId}
             </p>
@@ -87,12 +87,12 @@ const TicketForm: React.FC = () => {
             </p>
             <div className="flex items-center text-amber-700 bg-amber-50 p-2 rounded border border-amber-200">
               <AlertTriangle className="w-5 h-5 mr-2" />
-              <p className="text-sm">You will need both to check for responses or updates.</p>
+              <p className="text-sm">กรุณาจดทั้ง Report ID และ Access Password เพื่อป้อนในหน้าต่าง "ติดตามรายงาน"</p>
             </div>
           </div>
           <div className="flex items-center justify-center mt-2 text-sm text-gray-600">
             <Lock className="w-4 h-4 mr-1" />
-            <p>This information is not stored anywhere except in your browser's local storage.</p>
+            <p>ข้อมูลนี้จะไม่ถูกจัดเก็บไว้ที่ใด ยกเว้นในพื้นที่จัดเก็บของเบราว์เซอร์ของคุณเท่านั้น</p>
           </div>
         </CardContent>
         <CardFooter>
@@ -100,7 +100,7 @@ const TicketForm: React.FC = () => {
             onClick={resetForm} 
             className="w-full bg-whistleblower-navy hover:bg-whistleblower-darknavy"
           >
-            Submit Another Report
+            ส่งรายงานอื่น
           </Button>
         </CardFooter>
       </Card>
@@ -110,20 +110,20 @@ const TicketForm: React.FC = () => {
   return (
     <Card className="w-full max-w-md mx-auto animate-fade-in">
       <CardHeader>
-        <CardTitle>Submit an Anonymous Report</CardTitle>
+        <CardTitle>ส่งรายงานนิรนาม</CardTitle>
         <CardDescription>
-          Your identity will be kept confidential
+          ตัวตนของคุณจะถูกเก็บเป็นความลับ
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="title" className="text-sm font-medium">
-              Report Subject
+              หัวข้อการรายงาน
             </label>
             <Input
               id="title"
-              placeholder="Brief description of the issue"
+              placeholder="คำอธิบายสั้น ๆ เกี่ยวกับปัญหา"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -131,11 +131,11 @@ const TicketForm: React.FC = () => {
           </div>
           <div className="space-y-2">
             <label htmlFor="description" className="text-sm font-medium">
-              Report Details
+              อธิบายปัญหาอย่างละเอียด
             </label>
             <Textarea
               id="description"
-              placeholder="Provide as much relevant information as possible..."
+              placeholder="เช่น เหตุการณ์เป็นอย่างไร เกิดขึ้นที่ไหน เวรอะไร ส่งผลกระทบอย่างไร ต่อใครบ้าง ต้องการให้เกิดความเปลี่ยนแปลงอย่างไร"
               rows={6}
               className="resize-y"
               value={description}
@@ -145,7 +145,7 @@ const TicketForm: React.FC = () => {
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Shield className="w-4 h-4 mr-2" />
-            <p>Your submission is anonymous. No personal data is collected.</p>
+            <p>การส่งรายงานของคุณเป็นแบบนิรนาม ไม่มีการเก็บข้อมูลส่วนบุคคลใด ๆ</p>
           </div>
         </CardContent>
         <CardFooter>
@@ -154,7 +154,7 @@ const TicketForm: React.FC = () => {
             className="w-full bg-whistleblower-navy hover:bg-whistleblower-darknavy"
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Submit Report"}
+            {isSubmitting ? "กำลังส่ง..." : "ส่งรายงาน"}
           </Button>
         </CardFooter>
       </form>

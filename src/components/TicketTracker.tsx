@@ -26,14 +26,14 @@ const TicketTracker: React.FC = () => {
       
       if (foundTicket) {
         setTicket(foundTicket);
-        toast.success("Report found!");
+        toast.success("รายงานพบแล้ว!");
       } else {
-        toast.error("No report found with the provided ID and password.");
+        toast.error("ไม่พบรายงานด้วยรหัสและรหัสผ่านที่ให้มา");
         setTicket(null);
       }
     } catch (error) {
       console.error("Error retrieving ticket:", error);
-      toast.error("There was an error retrieving your report. Please try again.");
+      toast.error("เกิดข้อผิดพลาดในการดึงรายงานของคุณ โปรดลองอีกครั้ง");
     } finally {
       setIsLoading(false);
     }
@@ -52,26 +52,26 @@ const TicketTracker: React.FC = () => {
           comments: [...ticket.comments, comment]
         });
         setNewComment('');
-        toast.success("Comment added successfully");
+        toast.success("เพิ่มความเห็นสำเร็จ");
       }
     } catch (error) {
       console.error("Error adding comment:", error);
-      toast.error("Failed to add comment");
+      toast.error("ไม่สามารถเพิ่มความเห็นได้");
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'new':
-        return <Badge className="bg-blue-500">New</Badge>;
+        return <Badge className="bg-blue-500">ใหม่</Badge>;
       case 'in-progress':
-        return <Badge className="bg-yellow-500">In Progress</Badge>;
+        return <Badge className="bg-yellow-500">กำลังดำเนินการ</Badge>;
       case 'resolved':
-        return <Badge className="bg-green-500">Resolved</Badge>;
+        return <Badge className="bg-green-500">แก้ไขแล้ว</Badge>;
       case 'closed':
-        return <Badge className="bg-gray-500">Closed</Badge>;
+        return <Badge className="bg-gray-500">ปิดเรื่องแล้ว</Badge>;
       default:
-        return <Badge>Unknown</Badge>;
+        return <Badge>ไม่ทราบสถานะ</Badge>;
     }
   };
 
@@ -79,7 +79,7 @@ const TicketTracker: React.FC = () => {
     try {
       return format(new Date(dateString), 'MMM d, yyyy h:mm a');
     } catch (e) {
-      return 'Invalid date';
+      return 'วันที่ไม่ถูกต้อง';
     }
   };
 
@@ -94,20 +94,20 @@ const TicketTracker: React.FC = () => {
       {!ticket ? (
         <Card>
           <CardHeader>
-            <CardTitle>Track Your Report</CardTitle>
+            <CardTitle>ติดตามรายงาน</CardTitle>
             <CardDescription>
-              Enter your report ID and password to view its status and responses
+              ป้อนรหัสรายงานและรหัสผ่านเพื่อดูสถานะและการตอบกลับ
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <label htmlFor="ticketId" className="text-sm font-medium">
-                  Report ID
+                  รหัสรายงาน
                 </label>
                 <Input
                   id="ticketId"
-                  placeholder="Enter the ID provided when you submitted your report"
+                  placeholder="ป้อนรหัสที่ได้รับเมื่อส่งรายงาน"
                   value={ticketId}
                   onChange={(e) => setTicketId(e.target.value)}
                   required
@@ -115,12 +115,12 @@ const TicketTracker: React.FC = () => {
               </div>
               <div className="space-y-2">
                 <label htmlFor="password" className="text-sm font-medium">
-                  Access Password
+                  รหัสผ่านสำหรับเข้าถึง
                 </label>
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Enter your access password"
+                  placeholder="ป้อนรหัสผ่านสำหรับเข้าถึง"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -128,7 +128,7 @@ const TicketTracker: React.FC = () => {
               </div>
               <div className="flex items-center text-sm text-muted-foreground">
                 <Lock className="w-4 h-4 mr-2" />
-                <p>Your tracking information is kept private and secure.</p>
+                <p>ข้อมูลการติดตามของคุณจะถูกเก็บเป็นความลับและปลอดภัย</p>
               </div>
             </CardContent>
             <CardFooter>
@@ -138,10 +138,10 @@ const TicketTracker: React.FC = () => {
                 disabled={isLoading}
               >
                 {isLoading ? (
-                  "Searching..."
+                  "กำลังค้นหา..."
                 ) : (
                   <>
-                    <Search className="mr-2 h-4 w-4" /> Find My Report
+                    <Search className="mr-2 h-4 w-4" /> ค้นหารายงาน
                   </>
                 )}
               </Button>
@@ -156,7 +156,7 @@ const TicketTracker: React.FC = () => {
               {getStatusBadge(ticket.status)}
             </div>
             <CardDescription className="pt-2">
-              Submitted on {formatDate(ticket.createdAt)}
+              ส่งเมื่อ {formatDate(ticket.createdAt)}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -165,11 +165,11 @@ const TicketTracker: React.FC = () => {
             </div>
             
             <div className="space-y-2">
-              <h3 className="text-sm font-medium">Communication Thread</h3>
+              <h3 className="text-sm font-medium">การสื่อสาร</h3>
               
               {ticket.comments.length === 0 ? (
                 <div className="p-3 text-center text-sm text-muted-foreground bg-gray-50 rounded-md">
-                  No responses yet. Check back later.
+                  ยังไม่มีการตอบกลับ โปรดกลับมาตรวจสอบในภายหลัง
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -184,7 +184,7 @@ const TicketTracker: React.FC = () => {
                     >
                       <div className="flex justify-between items-center mb-1">
                         <span className="text-xs font-semibold">
-                          {comment.isAdmin ? 'Administrator' : 'You'}
+                          {comment.isAdmin ? 'หัวหน้าพยาบาล' : 'คุณ'}
                         </span>
                         <span className="text-xs text-gray-500">{formatDate(comment.createdAt)}</span>
                       </div>
@@ -198,11 +198,11 @@ const TicketTracker: React.FC = () => {
                 <form onSubmit={handleAddComment} className="mt-4">
                   <div className="space-y-2">
                     <label htmlFor="newComment" className="text-sm font-medium">
-                      Add a Reply
+                      เพิ่มการตอบกลับ
                     </label>
                     <Textarea
                       id="newComment"
-                      placeholder="Add more details or respond to questions..."
+                      placeholder="เพิ่มรายละเอียดเพิ่มเติมหรือตอบคำถาม..."
                       rows={3}
                       className="resize-y"
                       value={newComment}
@@ -215,7 +215,7 @@ const TicketTracker: React.FC = () => {
                     className="w-full mt-3 bg-whistleblower-teal hover:bg-teal-500"
                     disabled={!newComment.trim()}
                   >
-                    <MessageSquare className="mr-2 h-4 w-4" /> Send Reply
+                    <MessageSquare className="mr-2 h-4 w-4" /> ส่งข้อความ
                   </Button>
                 </form>
               )}
@@ -227,7 +227,7 @@ const TicketTracker: React.FC = () => {
               variant="outline"
               className="w-full"
             >
-              Track a Different Report
+              ติดตามรายงานอื่น
             </Button>
           </CardFooter>
         </Card>
