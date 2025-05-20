@@ -5,13 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { verifyAdminPassword } from '@/data/ticketsData';
 import { toast } from 'sonner';
-import { Shield } from "lucide-react";
 
 interface AdminLoginProps {
-  onLoginSuccess: () => void;
+  onLoginSuccess: (username: string) => void;
 }
 
 const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,17 +20,16 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
     setIsLoading(true);
     
     try {
-      // In a real application, this would be a secure authentication system
-      // For demo purposes, we're using a simple password check
-      if (verifyAdminPassword(password)) {
-        toast.success("Login successful!");
-        onLoginSuccess();
+      const adminData = verifyAdminPassword(username, password);
+      if (adminData) {
+        toast.success("เข้าสู่ระบบสำเร็จ!");
+        onLoginSuccess(username);
       } else {
-        toast.error("Invalid administrator password.");
+        toast.error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
       }
     } catch (error) {
       console.error("Error during login:", error);
-      toast.error("There was an error during login. Please try again.");
+      toast.error("เกิดข้อผิดพลาดขณะเข้าสู่ระบบ กรุณาลองอีกครั้ง");
     } finally {
       setIsLoading(false);
     }
@@ -47,21 +46,30 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ onLoginSuccess }) => {
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
           <div className="space-y-2">
+            <label htmlFor="username" className="text-sm font-medium">
+              Username
+            </label>
+            <Input
+              id="username"
+              type="text"
+              placeholder="Enter username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium">
-              Administrator Password
+              Password
             </label>
             <Input
               id="password"
               type="password"
-              placeholder="Enter administrator password"
+              placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </div>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Shield className="w-4 h-4 mr-2" />
-            <p>For demo purposes, the password is: admin123</p>
           </div>
         </CardContent>
         <CardFooter>

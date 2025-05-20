@@ -5,8 +5,10 @@ import AdminDashboard from '@/components/AdminDashboard';
 
 const Admin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentAdmin, setCurrentAdmin] = useState('');
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (username: string) => {
+    setCurrentAdmin(username);
     setIsLoggedIn(true);
   };
 
@@ -16,7 +18,7 @@ const Admin = () => {
         {!isLoggedIn ? (
           <AdminLogin onLoginSuccess={handleLoginSuccess} />
         ) : (
-          <AdminDashboard />
+          <AdminDashboard currentAdmin={currentAdmin} />
         )}
       </div>
     </div>
